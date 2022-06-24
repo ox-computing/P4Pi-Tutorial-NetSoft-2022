@@ -267,10 +267,16 @@ p4c --target bmv2 --arch v1model --std p4-16 calc.p4
 ```
 2. Run the compiled program. 
 ```
-sudo simple_switch –i 0@eth0 calc.json
+sudo simple_switch -i 0@veth0 calc.json
 ```
-3. Run the python script provided
+3. Change the network interface to `veth0-1` in `cal.py` 
+```
+iface = "veth0-1"
+```
+
+4. Run the python script 
+
 ```
 sudo python cal.py
 ```
-4. Enter an equation and check if you get the correct results.
+5. Enter an equation and check if you get the correct results.
