@@ -24,11 +24,15 @@ Installation
     cd P4Pi-Tutorial-NetSoft-2022   
    ```
 4. ```
-   ./p4app
+   ./p4app run l2switch.p4app
    ```
-When you run p4app at the first time, it will take some time to download the docker image.
+When you execute `p4app run` at the first time, it will take some time to download the docker image.
 
-5. You are ready!
+5. [Optional] Move `p4app` to $PATH so that `p4app` can be run from any location, for example:
+``` 
+cp p4app /usr/local/bin
+```
+6. You are ready!
 
 **We strongly recommend participants to finish the installation before the tutorial so that there will be more time left for hands-on exercises.**
 
@@ -54,11 +58,15 @@ or
 ```
 mininet> h1 ping h2
 ```
-At the moment there should be no connection between hosts
+At the moment there should be no connection among hosts
 
+3. Quit mininet
+```
+mininet > exit
+```
 ### Step 2: Implement the forwarding logic
 
-The `l2switch.p4` file contains a skeleton P4 program with key pieces of
+The `l2switch.p4app/p4src/l2switch.p4` file contains a skeleton P4 program with key pieces of
 logic replaced by `TODO` comments. Your implementation should follow
 the structure given in this file---replace each `TODO` with logic
 implementing the missing piece.
@@ -73,16 +81,10 @@ A complete `l2switch.p4` will contain the following components:
 	2. Updates the ethernet destination address with the address of the next hop.
 	3. Updates the ethernet source address with the address of the switch.
 	4. Decrements the TTL.
-5. **TODO:** A control that:
-    1. Defines a table that will read an IPv4 destination address, and
-       invoke either `drop` or `ipv4_forward`.
-    2. An `apply` block that applies the table.
+5. **TODO:** Fix ingress control logic that:
+    1. `ipv4_lpm` table should be applied only when IPv4 header is valid
 6. **TODO:** A deparser that selects the order
     in which fields inserted into the outgoing packet.
-7. A `package` instantiation supplied with the parser, control, and deparser.
-    > In general, a package also requires instances of checksum verification
-    > and recomputation controls. These are not necessary for this tutorial
-    > and are replaced with instantiations of empty controls.
 
 ### Step 3: Populate flow rules
 There is a control plane logic here: you need to define different flow rules in each switch so that they know how to forward the traffic to the destination.  
@@ -108,13 +110,18 @@ h2 -> h1 h3
 h3 -> h1 h2
 ```
 
-Alternatively, if you want to know more information about the packets, open a terminal (not in mininet):
+Alternatively, if you want to know more information about the packets, open a new terminal and copy required python scripts to hosts first (not in mininet):
 ```
-p4app exec m h2 python3 receive.py
+./install_scripts
+```
+
+Open a terminal:
+```
+./p4app exec m h2 python3 receive.py
 ```
 Open another terminal:
 ```
-p4app exec m h1 python3 send.py h2 "hello"
+./p4app exec m h1 python3 send.py h2 "hello"
 ```
 Then you should be able to see the packet contents:
 ```
@@ -154,6 +161,9 @@ got a packet
            load      = 'hello'
 ```
 
+### Solution
+The solution is available in `l2switch.p4app/p4src/solution`
+
 
 Exercise II: calculator
 --------------
@@ -175,18 +185,11 @@ Exercise II: calculator
    ```
 
 4. We've written a small Python-based driver program that will allow
-you to test your calculator. You can choose one of the hosts (i.e., `h1`, `h2` or `h3`) and run the following command in a new terminal:
+you to test your calculator. You can choose one of the hosts (i.e., `h1`, `h2` or `h3`) and run the following command in a new terminal, for instance:
 ```
 ./p4app exec m h1 python3 cal.py
 ```
-or
-```
-./p4app exec m h2 python3 cal.py
-```
-or
-```
-./p4app exec m h3 python3 cal.py
-```
+
 
 5. The driver program will provide a new prompt, at which you can type
 basic expressions. The test harness will parse your expression, and
@@ -239,7 +242,7 @@ and we will use the Ethernet type 0x1234 to indicate the presence of
 the header.
 
 Given what you have learned so far, your task is to implement the P4
-calculator program. There is no control plane logic, so you need only
+calculator program available in calc.p4app/p4src/calc.p4. There is no control plane logic, so you need only
 worry about the data plane implementation.
 
 A working calculator implementation will parse the custom headers,
@@ -257,10 +260,13 @@ correct result:
 >
 ```
 
+### Solution
+The solution is available in `calc.p4app/p4src/solution`
+
 Test on Raspberry Pi
 -------------------
 
-Once finishing two hands-on exercises, you can come to tutors and test your program on a Raspberry Pi. We use calculator as an example here:
+Once finishing two hands-on exercises, you can come to tutors and test your developed P4 program on a Raspberry Pi. We use calculator as an example here:
 1. Compile the P4 program
 ```
 p4c --target bmv2 --arch v1model --std p4-16 calc.p4
@@ -279,4 +285,5 @@ iface = "veth0-1"
 ```
 sudo python cal.py
 ```
+
 5. Enter an equation and check if you get the correct results.
