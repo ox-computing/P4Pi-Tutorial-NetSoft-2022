@@ -6,7 +6,7 @@ Introduction
 
 All general information related to this tutorial is available on our [Wiki page](https://github.com/p4lang/p4pi/wiki/P4Pi-Tutorial-NetSoft-2022).
 
-In this tutorial, we encourage participants to start with P4app to get familiar with P4 and develop their own P4 programs. Then the team will help participants to migrate the program to the Raspberry Pi and test.
+In this tutorial, we encourage participants to start with P4app to get familiar with P4 and develop their own P4 programs. Then the team will help participants to migrate the developed P4 program to the Raspberry Pi and test.
 
 Installation
 ------------
@@ -17,11 +17,11 @@ Installation
 2. Clone the repository to local 
 
     ```
-    git clone https://github.com/DINGDAMU/NetSoft_tutorial_2022.git    
+    git clone https://github.com/ox-computing/P4Pi-Tutorial-NetSoft-2022.git    
     ```
 
 3. ```
-    cd NetSoft_tutorial_2022
+    cd P4Pi-Tutorial-NetSoft-2022   
    ```
 4. ```
    ./p4app
@@ -29,6 +29,8 @@ Installation
 When you run p4app at the first time, it will take some time to download the docker image.
 
 5. You are ready!
+
+**We strongly recommend participants to finish the installation before the tutorial so that there will be more time left for hands-on exercises.**
 
 Network topology
 --------
