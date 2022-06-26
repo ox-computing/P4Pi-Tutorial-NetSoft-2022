@@ -187,6 +187,7 @@ Exercise II: calculator
 4. We've written a small Python-based driver program that will allow
 you to test your calculator. You can choose one of the hosts (i.e., `h1`, `h2` or `h3`) and run the following command in a new terminal, for instance:
 ```
+cd ..
 ./p4app exec m h1 python3 cal.py
 ```
 
