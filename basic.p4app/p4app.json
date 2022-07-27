@@ -1,5 +1,5 @@
 {
-  "program": "p4src/l2switch.p4",
+  "program": "p4src/basic.p4",
   "language": "p4-16",
   "targets": {
       "custom": {

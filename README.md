@@ -24,7 +24,7 @@ Installation
     cd P4Pi-Tutorial-NetSoft-2022   
    ```
 4. ```
-   ./p4app run l2switch.p4app
+   ./p4app run basic.p4app
    ```
 When you execute `p4app run` at the first time, it will take some time to download the docker image.
 
@@ -41,12 +41,12 @@ Network topology
 ![topo](topo.png)
 The network topology used in our tutorial is triangular, and each host connects to a switch. The details of hosts (i.e., `h1`, `h2`, and `h3`) and switches (i.e., `S1`, `S2`, and `S3`) are shown in the figure.
 
-Exercise I: L2 switching
+Exercise I: Simple L3 forwarding 
 --------------
 
 ### Step 1: Run the (incomplete) starter code
 1.  ```
-    ./p4app run l2switch.p4app 
+    ./p4app run basic.p4app 
     ```
     After this step you'll see the terminal of **mininet**
 
@@ -66,12 +66,12 @@ mininet > exit
 ```
 ### Step 2: Implement the forwarding logic
 
-The `l2switch.p4app/p4src/l2switch.p4` file contains a skeleton P4 program with key pieces of
+The `basic.p4app/p4src/basic.p4` file contains a skeleton P4 program with key pieces of
 logic replaced by `TODO` comments. Your implementation should follow
 the structure given in this file---replace each `TODO` with logic
 implementing the missing piece.
 
-A complete `l2switch.p4` will contain the following components:
+A complete `basic.p4` will contain the following components:
 
 1. Header type definitions for Ethernet (`ethernet_t`) and IPv4 (`ipv4_t`).
 2. **TODO:** Parsers for Ethernet and IPv4 that populate `ethernet_t` and `ipv4_t` fields.
@@ -94,7 +94,7 @@ The format of adding flow rules in `commands[1-3].txt` should be like:
 ```
 table_add [table name] [action name] [table key] => [action parameter] [action parameter 2] [...]
 ```
-An example using ipv4_lpm table in `l2switch.p4`:
+An example using ipv4_lpm table in `basic.p4`:
 ```
 table_add ipv4_lpm ipv4_forward 10.0.1.1/32 => 00:00:00:00:01:01 1
 ```
@@ -114,16 +114,24 @@ Alternatively, if you want to know more information about the packets, open a ne
 ```
 ./install_scripts
 ```
-
+**[Sniff traffic in h2]**  
 Open a terminal:
 ```
 ./p4app exec m h2 python3 receive.py
 ```
-Open another terminal:
+
+
+**[Send traffic from h1 to h2]**  
+```
+mininet> h1 python3 send.py h2 "hello"
+```
+
+**[Alternative way to send traffic]** Open another terminal:
 ```
 ./p4app exec m h1 python3 send.py h2 "hello"
 ```
-Then you should be able to see the packet contents:
+
+Then you should be able to see the packet contents in h2:
 ```
 sniffing on h2-eth0
 got a packet
@@ -162,7 +170,7 @@ got a packet
 ```
 
 ### Solution
-The solution is available in `l2switch.p4app/p4src/solution`
+The solution is available in `basic.p4app/p4src/solution`
 
 
 Exercise II: calculator
@@ -185,12 +193,15 @@ Exercise II: calculator
    ```
 
 4. We've written a small Python-based driver program that will allow
-you to test your calculator. You can choose one of the hosts (i.e., `h1`, `h2` or `h3`) and run the following command in a new terminal, for instance:
+you to test your calculator. You can choose one of the hosts (i.e., `h1`, `h2` or `h3`) and type the following command in the terminal of **mininet**, for instance:
+```
+mininet> h1 python3 cal.py
+```
+**[Alternative]** Run the following command in a new terminal (not in mininet):
 ```
 cd ..
 ./p4app exec m h1 python3 cal.py
 ```
-
 
 5. The driver program will provide a new prompt, at which you can type
 basic expressions. The test harness will parse your expression, and
@@ -282,7 +293,6 @@ iface = "veth0-1"
 ```
 
 4. Run the python script 
-
 ```
 sudo python cal.py
 ```
